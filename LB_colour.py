@@ -144,11 +144,14 @@ class user:
 		Plot = []
 		for i in range(0, len(self.films)):
 			Plot.append(self.films[i][3])
+			Plot[i].append(self.films[i][0])
+			Plot[i].append(self.films[i][1])
 
-		df = pd.DataFrame(Plot, columns =["R", "G", "B", "score"])
+		df = pd.DataFrame(Plot, columns =["R", "G", "B", "score", "Title", "url"])
 
 		trace = go.Scatter3d(x=df.R, y=df.G, z=df.B, mode=Mode,
-							marker=dict(color=['rgb({},{},{})'.format(r,g,b) for r,g,b in zip(df.R.values, df.G.values, df.B.values)]))
+							marker=dict(color=['rgb({},{},{})'.format(r,g,b) for r,g,b in zip(df.R.values, df.G.values, df.B.values)]),
+							text = ["Title: {}".format(x) for x in df["Title"] ])
 		data = [trace]
 
 		layout = go.Layout(margin=dict(l=0,
