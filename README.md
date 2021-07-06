@@ -27,9 +27,12 @@ Normally, sorting posters takes lots of time and multiple headaches. This code m
 [the new list page](https://letterboxd.com/list/new/) 
  .It also puts out an image of all the colours the code extracted from the poster. The last thing it exports is a plotly graph where all the colours are plotted by RGB value.
 
-  ### Built With
+### How to use / Example
 
-The code was built using Python with the following APIs:
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-* [Laravel](https://laravel.com)
+In the following example my personal Letterboxd account will be used: _(Consider a follow)_ [coencoensmeets](https://letterboxd.com/coencoensmeets/).
+The code has only been tested on a windows 10 machine.
+First install APIs
+* API installation
+  ```sh
+  pip install -r requirements.txt
+  ```
