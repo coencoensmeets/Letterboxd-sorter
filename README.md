@@ -21,4 +21,15 @@
 </p>
 
 ## About The Project
-The last few months multiple lists became popular on Letterboxd in which the films were sorted by colour. An example: <a href="https://letterboxd.com/theslayerbuffy/list/color/"'> Arlo McLean's list 'color'<\a>. Normally, sorting posters takes lots of time and multiple headaches. This code makes it easy. It sorts all the film a user has seen. It exports an .csv file that can be imported into letterboxd on <a href="https://letterboxd.com/list/new/">the new list page <\a>. it also puts out an image of all the colours the code extracted from the poster. The last thing it exports is a plotly graph where all the colours are plotted by RGB value.
+The last few months multiple lists became popular on Letterboxd in which the films were sorted by colour. An example: 
+<a href="https://letterboxd.com/theslayerbuffy/list/color/"'> Arlo McLean's list 'color'<\a>. 
+Normally, sorting posters takes lots of time and multiple headaches. This code makes it easy. It sorts all the film a user has seen. It exports an .csv file that can be imported into letterboxd on 
+<a href="https://letterboxd.com/list/new/">the new list page <\a>. 
+  it also puts out an image of all the colours the code extracted from the poster. The last thing it exports is a plotly graph where all the colours are plotted by RGB value.
+
+  ### Built With
+
+The code was built using Python with the following APIs:
+* [Bootstrap](https://getbootstrap.com)
+* [JQuery](https://jquery.com)
+* [Laravel](https://laravel.com)
