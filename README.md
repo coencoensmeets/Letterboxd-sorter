@@ -58,4 +58,9 @@ First install APIs
   The image with sorted colours:
   <img src="https://i.imgur.com/ACaDdRc.png" alt="Logo">
   
-  
+##Possible updates:
+  By plotting the RGB values in a 3D plot with lines that connect adjacent posters, shows issues with yellow and reds. One sorting method that might fix that is by first K-clustering all the values into groups and then connecting the groups. This way the yellows are not mixed in with the whites.
+
+##Errors in sorting:
+Unfortunately, there are some apparent errors. Colour is interpreted in the brain and is influenced by many factors. The first issue is getting one single RGB value from a poster. What colour is leading in the image?Secondly, sorting colours is an impossible job to get correct and certainly for a machine. Alan Zucconi wrote a great article about it. 
+([https://www.alanzucconi.com/2015/09/30/colour-sorting/](https://www.alanzucconi.com/2015/09/30/colour-sorting/)) I used his inverted step sorting algorithm because it seemed to give the best results.
