@@ -9,13 +9,16 @@
   <p align="center">
     An awesome README template to jumpstart your projects!
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/coencoensmeets/Letterboxd-sorter"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/coencoensmeets/Letterboxd-sorter">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/coencoensmeets/Letterboxd-sorter/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/coencoensmeets/Letterboxd-sorter/issues">Request Feature</a>
   </p>
 </p>
+
+## About The Project
+The last few months multiple lists became popular on Letterboxd in which the films were sorted by colour. An example: <a href="https://letterboxd.com/theslayerbuffy/list/color/"'> Arlo McLean's list 'color'<\a>. Normally, sorting posters takes lots of time and multiple headaches. This code makes it easy. It sorts all the film a user has seen. It exports an .csv file that can be imported into letterboxd on <a href="https://letterboxd.com/list/new/">the new list page<\a>. it also puts out an image of all the colours the code extracted from the poster. The last thing it exports is a plotly graph where all the colours are plotted by RGB value.
