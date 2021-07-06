@@ -32,7 +32,8 @@ Normally, sorting posters takes lots of time and multiple headaches. This code m
 In the following example my personal Letterboxd account will be used: _(Consider a follow)_ [coencoensmeets](https://letterboxd.com/coencoensmeets/).
 The code has only been tested on a windows 10 machine.
 First install APIs
-* API installation
+1. API installation
   ```sh
   pip install -r requirements.txt
   ```
+2. Run the script
