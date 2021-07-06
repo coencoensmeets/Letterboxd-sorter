@@ -53,5 +53,5 @@ First install APIs
   4. Pl: Creates the Plotly graph with lines.
 
 3. Check out the outputs
-  <img src="https://preview.redd.it/0tvbgnsck0971.png?width=1904&format=png&auto=webp&s=61341e40b482fad50694cee77aef25c316afa748" alt="Logo" width="400" height="400">
+  <img src="https://preview.redd.it/0tvbgnsck0971.png?width=1904&format=png&auto=webp&s=61341e40b482fad50694cee77aef25c316afa748" alt="Logo" width="800" height="400">
   
