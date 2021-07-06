@@ -9,17 +9,12 @@ import json
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 import requests
 import re
-import json
 import PIL.Image
 import pandas as pd
 
 import plotly.graph_objs as go
 import colorsys
 import math
-from sklearn.cluster import KMeans
-
-PATH = "D:\\Python3.6\\Data"
-username = "coencoensmeets"
 
 def save_soup(url, filename):
 	with request.urlopen(url) as response:
@@ -232,32 +227,47 @@ class user:
 					self.add_film(film_temp)
 					self.save()
 
-User = user(username)
-User.get_image(All=True)
+if __name__ == "__main__":
+	if (sys.argv[1] == "-h"):
+		print("Check out the Github page: {}".format("https://github.com/coencoensmeets/Letterboxd-sorter"))
+		exit()
 
-User.create_image()
-# User.create_list()
-User.create_plot(Mode="markers")
+	if (os.path.isdir(sys.argv[1]) == True):
+		print("Using {} for exporting of files".format(sys.argv[1]))
+		PATH = str(sys.argv[1])
 
-#----Test with clustering-------------
-# Test = User.films
-# Plot = []
-# for i in range(0, len(Test)):
-# 	Plot.append(Test[i][3])
+	elif (sys.argv[1]== "-here"):
+		PATH = str(os.getcwd())
+		print("Using current directory for export of files: {}".format(directory))
 
-# df = pd.DataFrame(Plot, columns =["R", "G", "B", "score"])
-# df= df[["R", "G", "B"]]
-# km = KMeans(n_clusters=10)
-# km.fit(df)
-# df['cluster'] = km.labels_
-# trace = go.Scatter3d(x=df.R, y=df.G, z=df.B, mode="markers",
-# 							marker=dict(color=df.cluster))
-# data = [trace]
 
-# layout = go.Layout(margin=dict(l=0,
-# 									   r=0,
-# 									   b=0,
-# 									   t=0))
+	else:
+		PATH = str(os.getcwd())
+		print("Could not recognise directory. Using current directory for export of files: {}".format(directory))
 
-# fig = go.Figure(data=data, layout=layout)
-# fig.show()
+	username = str(sys.argv[2])
+	print(username)
+
+	User = user(username)
+	User.get_image()
+
+	if (len(sys.argv)==3):
+		Options = "-L"
+	else:
+		Options = sys.argv[3]
+
+	if ("L" in Options):
+		User.create_list()
+		print("List created")
+
+	if ("I" in Options):
+		User.create_image()
+		print("Image created")
+
+	if ("Pm" in Options):
+		User.create_plot(Mode="markers")
+		print("plot created without lines")
+
+	if ("Pl" in Options):
+		User.create_plot()
+		print("plot created with lines")
