@@ -37,3 +37,21 @@ First install APIs
   pip install -r requirements.txt
   ```
 2. Run the script
+  ```sh
+  python LB_colour.py D:\\Home\\Data coencoensmeets -LPmI
+  ```
+  The running of the script has bene built up in the following way:
+  ```sh
+  python LB_colour.py **Prefered directory** **Username** -**Options**
+  ```
+  Directory: If the prefered directory can not be found, the current directory will be used.
+  Username: This is the letterboxd username (the same username as is in the link to a profile)
+  Options: With the many exports, an option has been added to disable a few. If no options are profived, only a list will be added. The options cna be changes by added the letters. The options available:
+  1. L: This creates the letterboxd list with the posters sorted that can be imported.
+  2. I: Creates the image with the extracted colours sorted.
+  3. Pm: Creates the Plotly graph without lines.
+  4. Pl: Creates the Plotly graph with lines.
+
+3. Check out the outputs
+  <img src="https://preview.redd.it/0tvbgnsck0971.png?width=1904&format=png&auto=webp&s=61341e40b482fad50694cee77aef25c316afa748" alt="Logo" width="400" height="400">
+  
