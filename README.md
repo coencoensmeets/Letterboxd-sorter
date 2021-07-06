@@ -58,9 +58,12 @@ First install APIs
   The image with sorted colours:
   <img src="https://i.imgur.com/ACaDdRc.png" alt="Logo">
   
-##Possible updates:
+### Possible updates:
   By plotting the RGB values in a 3D plot with lines that connect adjacent posters, shows issues with yellow and reds. One sorting method that might fix that is by first K-clustering all the values into groups and then connecting the groups. This way the yellows are not mixed in with the whites.
 
-##Errors in sorting:
+### Errors in sorting:
 Unfortunately, there are some apparent errors. Colour is interpreted in the brain and is influenced by many factors. The first issue is getting one single RGB value from a poster. What colour is leading in the image?Secondly, sorting colours is an impossible job to get correct and certainly for a machine. Alan Zucconi wrote a great article about it. 
 ([https://www.alanzucconi.com/2015/09/30/colour-sorting/](https://www.alanzucconi.com/2015/09/30/colour-sorting/)) I used his inverted step sorting algorithm because it seemed to give the best results.
+
+### The workings:
+Because of the limited acces to the Letterboxd API. The films are webscraped. Due to the limited information possible to gather from the films site, an algorithm was created to calculate a possible poster url. If this url does not exist a more time sensitive algorithm is used, that downloads a new site and extracts the poster url from that. After all the posters and films are collected. Each poster is evaluated with its main, dominant colour. These colours are later used to order the poster using the inverted step algorithm created by Alen Zucconi. After the lists are sorted the options are evaluated and the files are outputted as desired. If the data, of previous runs of the code, is in the directory that is being used, the list of films will only be updated. Within the code there are also options to not only update but start fresh. This option has to be activated in the code itself.
