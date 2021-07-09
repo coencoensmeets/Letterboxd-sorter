@@ -11,10 +11,12 @@ import requests
 import re
 import PIL.Image
 import pandas as pd
+import numpy
 
 import plotly.graph_objs as go
 import colorsys
 import math
+from sklearn.cluster import KMeans
 
 def save_soup(url, filename):
 	with request.urlopen(url) as response:
@@ -24,17 +26,6 @@ def save_soup(url, filename):
 			with open(filename, 'w') as wf:
 				wf.write(str(soup.prettify().encode('utf-8')))
 	return soup
-
-def step (r,g,b, repetitions=1):
-	lum = math.sqrt( .241 * r + .691 * g + .068 * b )
-	h, s, v = colorsys.rgb_to_hsv(r,g,b)
-	h2 = int(h * repetitions)
-	lum2 = int(lum * repetitions)
-	v2 = int(v * repetitions)
-	if h2 % 2 == 1:
-		v2 = repetitions - v2
-		lum = repetitions - lum
-	return (h2, lum, v2)
 
 def Dom_colour(image, palette_size=2):
 	img = image.copy()
@@ -48,15 +39,8 @@ def Dom_colour(image, palette_size=2):
 	for x in range(0, len(colour_counts)):
 		palette_index = colour_counts[x][1]
 		dominant_colours.append(palette[palette_index*3:palette_index*3+3])
-
-	Dif_colour = 0
-	for i in range(0, 2):
-		Dif_colour += abs(dominant_colours[0][i] - dominant_colours[1][i])
-
-	score = Dif_colour
-	dominant_colours[0].append(score)
-	dominant_colour = dominant_colours[0]
-	return dominant_colours
+		
+	return dominant_colours[0]
 
 def checkfordig(film_title):
 	if "-" in film_title:
@@ -68,6 +52,15 @@ def checkfordig(film_title):
 	else:
 		string= film_title
 	return string
+
+def sort(List, N_clusters=10):
+	df = pd.DataFrame(List, columns =["Title", "link_img", "LetterboxdURI", "R", "G", "B", "H", "V", "S"])
+	km = KMeans(n_clusters=N_clusters)
+	km.fit(df[["R", "G", "B"]])
+	df['cluster'] = km.labels_
+	df.sort_values(by=["cluster", "H", "S", "V"], inplace=True, ascending=False)
+	List_out = df.values.tolist()
+	return List_out
 
 class user:
 	def __init__(self, name):
@@ -92,6 +85,39 @@ class user:
 	def add_film(self, film):
 		self.films.append(film)
 
+	def create_list(self, Sorted=False):
+		df = pd.DataFrame(self.films, columns =["Title", "link_img", "LetterboxdURI", "R", "G", "B", "H", "V", "S", "cluster"])
+		df[["LetterboxdURI"]].to_csv('{}/{}.csv'.format(PATH, username), index=False)
+
+	def create_image(self):
+		pixels = 5
+		img = PIL.Image.new('RGB', (len(self.films)*pixels, 100))
+		img1 = ImageDraw.Draw(img, 'RGB')
+		for x in range(0, len(self.films)):
+			img1.rectangle([x*pixels, 0, (x+pixels)*pixels,600], fill =(self.films[x][3], self.films[x][4], self.films[x][5]))
+
+		img.save("{}/{}.png".format(PATH, username))
+
+	def create_plot(self, Mode="lines+markers"):
+		df = pd.DataFrame(self.films, columns =["Title", "link_img", "LetterboxdURI", "R", "G", "B", "H", "V", "S", "cluster"])
+
+		trace = go.Scatter3d(x=df.R, y=df.G, z=df.B, mode=Mode,
+							marker=dict(color=['rgb({},{},{})'.format(r,g,b) for r,g,b in zip(df.R.values, df.G.values, df.B.values)]),
+							text = ["Title: {}".format(x) for x in df["Title"] ])
+		data = [trace]
+
+		layout = go.Layout(title ="RGB Graph", margin=dict(l=0,
+									   r=0,
+									   b=0,
+									   t=0),
+		scene = dict(
+                    xaxis_title='Red',
+                    yaxis_title='Green',
+                    zaxis_title='Blue'))
+
+		fig = go.Figure(data=data, layout=layout)
+		fig.show()
+
 	def get_image_link(self, link):
 		soup1 = save_soup(link,'{}1_META.html'.format(PATH))
 		script_json = soup1.find_all("script")[14].string
@@ -101,66 +127,17 @@ class user:
 		return y["image"]
 
 	def get_image(self, All=False):
-		print("Getting images")
+		print("Getting images: {}".format(All))
 		for x in range(0, len(self.films)):
 			print("Image: {}".format(x))
 			if (len(self.films[x])==3) or (All==True):
 				del self.films[x][3:]
 				im = Image.open(requests.get(self.films[x][1], stream=True).raw)
 				colour = Dom_colour(im)
-				self.films[x].append(colour[0])
-				self.films[x].append(colour[1])
+				self.films[x].extend(colour)
+				self.films[x].extend(colorsys.rgb_to_hsv(colour[0], colour[1], colour[2]))
 				self.save()
-
-	def create_list(self):
-		Sorted = self.films
-		for x in range(0, len(Sorted)):
-			if (Sorted[x][3][3]):
-				Sorted[x].append(list(step(Sorted[x][3][0], Sorted[x][3][1], Sorted[x][3][2], 6)))
-
-		print(len(Sorted))
-
-		Sorted.sort(key=lambda x: x[-1])
-		df = pd.DataFrame(Sorted, columns =['Title', "link_img", "LetterboxdURI", "rgb", "rgb", "hls"])
-		# print(df[["LetterboxdURI"]])
-		df[["LetterboxdURI"]].to_csv('{}/{}.csv'.format(PATH, username), index=False)
-
-	def create_image(self):
-		Sorted = self.films
-		for x in range(0, len(Sorted)):
-			if (Sorted[x][3][3]):
-				Sorted[x].append(list(step(Sorted[x][3][0], Sorted[x][3][1], Sorted[x][3][2], 6)))
-
-
-		pixels = 5
-		img = PIL.Image.new('RGB', (len(Sorted)*pixels, 100))
-		img1 = ImageDraw.Draw(img, 'RGB')
-		for x in range(0, len(Sorted)):
-			img1.rectangle([x*pixels, 0, (x+pixels)*pixels,100], fill =(Sorted[x][3][0],Sorted[x][3][1],Sorted[x][3][2]))
-
-		img.save("{}/{}.png".format(PATH, username))
-
-	def create_plot(self, Mode="lines+markers"):
-		Plot = []
-		for i in range(0, len(self.films)):
-			Plot.append(self.films[i][3])
-			Plot[i].append(self.films[i][0])
-			Plot[i].append(self.films[i][1])
-
-		df = pd.DataFrame(Plot, columns =["R", "G", "B", "score", "Title", "url"])
-
-		trace = go.Scatter3d(x=df.R, y=df.G, z=df.B, mode=Mode,
-							marker=dict(color=['rgb({},{},{})'.format(r,g,b) for r,g,b in zip(df.R.values, df.G.values, df.B.values)]),
-							text = ["Title: {}".format(x) for x in df["Title"] ])
-		data = [trace]
-
-		layout = go.Layout(margin=dict(l=0,
-									   r=0,
-									   b=0,
-									   t=0))
-
-		fig = go.Figure(data=data, layout=layout)
-		fig.show()
+		self.films =  sort(self.films)
 
 	def get_films(self, All=False, image_set=False):
 		print(All)
@@ -252,7 +229,8 @@ if __name__ == "__main__":
 	print(username)
 
 	User = user(username)
-	User.get_image()
+	User.get_image(All=False)
+	print(User.films)
 
 	if (len(sys.argv)==3):
 		Options = "-L"
