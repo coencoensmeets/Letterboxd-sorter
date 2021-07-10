@@ -46,7 +46,7 @@ First install APIs
   ```
   Directory: If the prefered directory can not be found, the current directory will be used.
   Username: This is the letterboxd username (the same username as is in the link to a profile)
-  Options: With the many exports, an option has been added to disable a few. If no options are profived, only a list will be added. The options cna be changes by added the letters. The options available:
+  Options: With the many exports, an option has been added to disable a few. If no options are profived, only a list will be added. The options can be changes by added the letters. The options available:
   1. L: This creates the letterboxd list with the posters sorted that can be imported.
   2. I: Creates the image with the extracted colours sorted.
   3. Pm: Creates the Plotly graph without lines.
@@ -57,13 +57,10 @@ First install APIs
   <img src="https://preview.redd.it/0tvbgnsck0971.png?width=1904&format=png&auto=webp&s=61341e40b482fad50694cee77aef25c316afa748" alt="Logo" width="800" height="400">
   The image with sorted colours:
   <img src="https://i.imgur.com/ACaDdRc.png" alt="Logo">
-  
-### Possible updates:
-  By plotting the RGB values in a 3D plot with lines that connect adjacent posters, shows issues with yellow and reds. One sorting method that might fix that is by first K-clustering all the values into groups and then connecting the groups. This way the yellows are not mixed in with the whites.
 
 ### Errors in sorting:
 Unfortunately, there are some apparent errors. Colour is interpreted in the brain and is influenced by many factors. The first issue is getting one single RGB value from a poster. What colour is leading in the image?Secondly, sorting colours is an impossible job to get correct and certainly for a machine. Alan Zucconi wrote a great article about it. 
-([https://www.alanzucconi.com/2015/09/30/colour-sorting/](https://www.alanzucconi.com/2015/09/30/colour-sorting/)) I used his inverted step sorting algorithm because it seemed to give the best results.
+([https://www.alanzucconi.com/2015/09/30/colour-sorting/](https://www.alanzucconi.com/2015/09/30/colour-sorting/))
 
 ### The workings:
-Because of the limited acces to the Letterboxd API. The films are webscraped. Due to the limited information possible to gather from the films site, an algorithm was created to calculate a possible poster url. If this url does not exist a more time sensitive algorithm is used, that downloads a new site and extracts the poster url from that. After all the posters and films are collected. Each poster is evaluated with its main, dominant colour. These colours are later used to order the poster using the inverted step algorithm created by Alen Zucconi. After the lists are sorted the options are evaluated and the files are outputted as desired. If the data, of previous runs of the code, is in the directory that is being used, the list of films will only be updated. Within the code there are also options to not only update but start fresh. This option has to be activated in the code itself.
+Because of the limited acces to the Letterboxd API. The films are webscraped. Due to the limited information possible to gather from the films site, an algorithm was created to calculate a possible poster url. If this url does not exist a more time sensitive algorithm is used, that downloads a new site and extracts the poster url from that. After all the posters and films are collected. Each poster is evaluated with its main, dominant colour. These colours are later used to order the poster using a K-means sorting method. The colours are first sorted in groups and then those groups are then sorted by value, hue and saturation. After the lists are sorted the options are evaluated and the files are outputted as desired. If the data, of previous runs of the code, is in the directory that is being used, the list of films will only be updated. Within the code there are also options to not only update but start fresh. This option has to be activated in the code itself.
