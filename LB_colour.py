@@ -27,20 +27,20 @@ def save_soup(url, filename):
 				wf.write(str(soup.prettify().encode('utf-8')))
 	return soup
 
-def Dom_colour(image, palette_size=2):
+def Dom_colour(image, palette_size=5):
 	img = image.copy()
 	img.thumbnail((50, 50))
 
-	paletted = img.convert('P', palette=PIL.Image.ADAPTIVE, colors=palette_size)
-
-	palette = paletted.getpalette()
-	colour_counts = sorted(paletted.getcolors(), reverse=True)
-	dominant_colours = []
-	for x in range(0, len(colour_counts)):
-		palette_index = colour_counts[x][1]
-		dominant_colours.append(palette[palette_index*3:palette_index*3+3])
-		
-	return dominant_colours[0]
+	pixels = list(img.getdata())
+	df = pd.DataFrame(pixels, columns=["R", "G", "B"])
+	km = KMeans(n_clusters=3)
+	km.fit(df[["R", "G", "B"]])
+	df['cluster'] = km.labels_
+	df_count = df.copy()
+	df_count = df_count.groupby('cluster').count()
+	max_cluster = df_count["R"].idxmax()
+	dominant_colours = [int(x) for x in km.cluster_centers_[max_cluster]]
+	return dominant_colours
 
 def checkfordig(film_title):
 	if "-" in film_title:
@@ -58,8 +58,24 @@ def sort(List, N_clusters=10):
 	km = KMeans(n_clusters=N_clusters)
 	km.fit(df[["R", "G", "B"]])
 	df['cluster'] = km.labels_
-	df.sort_values(by=["cluster", "H", "S", "V"], inplace=True, ascending=False)
+	cluster_numpy = km.cluster_centers_
+	cluster = [x.tolist() for x in cluster_numpy]
+	for i in range(0, len(cluster)):
+		cluster[i].append(i)
+		cluster[i]= [int(x) for x in cluster[i]]
+		cluster[i].extend(colorsys.rgb_to_hsv(cluster[i][0], cluster[i][1], cluster[i][2]))
+
+	df_cluster = pd.DataFrame(cluster, columns=["R", "G", "B", "cluster", "H", "S", "V"])
+	df_cluster.sort_values(by=["V", "S", "H"], inplace=True, ascending=True)
+	df["cluster_sorted"] = True
+	for i in range(0, N_clusters):
+		cluster_number = int(df_cluster.iloc[i]["cluster"])
+		df["cluster_sorted"][df["cluster"]==cluster_number] = i
+
+	df.sort_values(by=["cluster_sorted", "S", "V", "H"], inplace=True, ascending=False)
+	del df['cluster_sorted']
 	List_out = df.values.tolist()
+
 	return List_out
 
 class user:
@@ -129,7 +145,7 @@ class user:
 	def get_image(self, All=False):
 		print("Getting images: {}".format(All))
 		for x in range(0, len(self.films)):
-			print("Image: {}".format(x))
+			print("Image: {}/{}".format(x, len(self.films)))
 			if (len(self.films[x])==3) or (All==True):
 				del self.films[x][3:]
 				im = Image.open(requests.get(self.films[x][1], stream=True).raw)
@@ -147,21 +163,25 @@ class user:
 			self.save()
 			self.load()
 
-		#Get Data
-		page = 1
+		if ("_" in self.name):
+			link_download = "https://letterboxd.com/{}/page/{}/"
+			username= "{}/list/{}".format(self.name.split("_")[0], self.name.split("_")[1])
+		else:
+			link_download = 'http://letterboxd.com/{}/films/by/date/page/{}/'
+			username= self.name
 		
-		site = 'http://letterboxd.com/{}/films/by/date/page/{}/'.format(self.name, page)
+		page = 1
+		site = link_download.format(username, page)
+		print(site)
 		soup = save_soup(site,'{}_META.html'.format(PATH))
 		try: 
 			last_page = int(soup.find_all(class_='paginate-page')[-1].text)
 		except:
 			last_page = 1
 
-		# last_page = 1 #
-
 		for page in range(1, last_page+1):
 			print("Page Number: {}/{}".format(page, last_page))
-			site = 'http://letterboxd.com/{}/films/by/date/page/{}/'.format(self.name, page)
+			site = link_download.format(username, page)
 			soup = save_soup(site,'{}_META.html'.format(PATH))
 
 			movie_li = [lm for lm in soup.find_all(
@@ -203,6 +223,7 @@ class user:
 					film_temp.append('http://letterboxd.com{}'.format(movie_li[i].div['data-target-link']))
 
 					print("Film done: {}".format(film_temp[0]))
+					print(film_temp)
 
 					self.add_film(film_temp)
 					self.save()
@@ -226,11 +247,12 @@ if __name__ == "__main__":
 		print("Could not recognise directory. Using current directory for export of files: {}".format(directory))
 
 	username = str(sys.argv[2])
+	if ("/" in username):
+		username = "{}_{}".format(username.split("/")[3], username.split("/")[5])
 	print(username)
 
 	User = user(username)
 	User.get_image(All=False)
-	print(User.films)
 
 	if (len(sys.argv)==3):
 		Options = "-L"
