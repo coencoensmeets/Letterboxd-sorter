@@ -27,6 +27,10 @@ Normally, sorting posters takes lots of time and multiple headaches. This code m
 [the new list page](https://letterboxd.com/list/new/) 
  .It also puts out an image of all the colours the code extracted from the poster. The last thing it exports is a plotly graph where all the colours are plotted by RGB value.
 
+### Updates
+A new custom sorting method has been implemented: Using a K-means system to sort colours. This is an improvement over the old system. Colours are nw sorted into groups before begin sorted by value.
+List support has also been added. When running the script, the username can now be substituted for a lists url.
+
 ### How to use / Example
 
 In the following example my personal Letterboxd account will be used: _(Consider a follow)_ [coencoensmeets](https://letterboxd.com/coencoensmeets/).
@@ -40,12 +44,13 @@ First install APIs
   ```sh
   python LB_colour.py D:\\Home\\Data coencoensmeets -LPmI
   ```
-  The running of the script has bene built up in the following way:
+  The running of the script has been built up in the following way:
   ```sh
   python LB_colour.py **Prefered directory** **Username** -**Options**
   ```
   Directory: If the prefered directory can not be found, the current directory will be used.
   Username: This is the letterboxd username (the same username as is in the link to a profile)
+    Lists links are now also supported.
   Options: With the many exports, an option has been added to disable a few. If no options are profived, only a list will be added. The options can be changes by added the letters. The options available:
   1. L: This creates the letterboxd list with the posters sorted that can be imported.
   2. I: Creates the image with the extracted colours sorted.
@@ -59,7 +64,7 @@ First install APIs
   <img src="https://i.imgur.com/ACaDdRc.png" alt="Logo">
 
 ### Errors in sorting:
-Unfortunately, there are some apparent errors. Colour is interpreted in the brain and is influenced by many factors. The first issue is getting one single RGB value from a poster. What colour is leading in the image?Secondly, sorting colours is an impossible job to get correct and certainly for a machine. Alan Zucconi wrote a great article about it. 
+Unfortunately, there are some apparent errors. Colour is interpreted in the brain and is influenced by many factors. The first issue is getting one single RGB value from a poster. What colour is leading in the image? Secondly, sorting colours is an impossible job to get correct and certainly for a machine. Alan Zucconi wrote a great article about it. 
 ([https://www.alanzucconi.com/2015/09/30/colour-sorting/](https://www.alanzucconi.com/2015/09/30/colour-sorting/))
 
 ### The workings:
