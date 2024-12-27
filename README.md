@@ -20,6 +20,8 @@
   </p>
 </p>
 
+> **⚠️ Warning: This project has not been updated and tested for many years! ⚠️**
+
 ## About The Project
 The last few months multiple lists became popular on Letterboxd in which the films were sorted by colour. An example: 
 [Arlo McLean's list 'color'](https://letterboxd.com/theslayerbuffy/list/color/)
